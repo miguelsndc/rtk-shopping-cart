@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react'
-import { api } from '../shared/api'
+import { useCatalog } from './useCatalog'
+import { useAppDispatch } from '../../core/store-helpers'
+import { addProductToCart } from '../cart'
 
-type Product = {
+export type Product = {
   id: number
   title: string
   price: number
@@ -15,17 +16,24 @@ type Product = {
 }
 
 export const Catalog = () => {
-  const [products, setProducts] = useState<Product[]>([])
+  const { data, error, isLoading } = useCatalog()
+  const dispatch = useAppDispatch()
 
-  useEffect(() => {
-    api.get<Product[]>('/products').then(response => {
-      setProducts(response.data)
-    })
-  }, [])
+  if (isLoading) {
+    return (
+      <div className='w-screen h-screen flex items-center justify-center'>
+        Loading...
+      </div>
+    )
+  }
+
+  function handleAddToCart(product: Product) {
+    dispatch(addProductToCart(product))
+  }
 
   return (
     <div className='w-full max-w-6xl m-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 p-2'>
-      {products.map(product => (
+      {data.map(product => (
         <div key={product.id} className='w-full'>
           <img
             src={product.images[0]}
@@ -40,7 +48,10 @@ export const Catalog = () => {
             <p className='leading-tight text-gray-500 block '>
               {product.description}
             </p>
-            <button className='bg-indigo-700 hover:bg-indigo-800 transition-colors block mt-2 py-3 text-white rounded '>
+            <button
+              onClick={() => handleAddToCart(product)}
+              className='bg-indigo-700 hover:bg-indigo-800 transition-colors block mt-2 py-3 text-white rounded '
+            >
               Adicionar ao Carrinho
             </button>
           </footer>
