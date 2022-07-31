@@ -27,7 +27,7 @@ const cartSlice = createSlice({
       )
 
       if (existingItemIndex !== -1) {
-        state.products[existingItemIndex].quantity += +1
+        state.products[existingItemIndex].quantity += 1
       } else
         state.products.push({
           ...newItem,
@@ -73,3 +73,5 @@ const { addProductToCart, removeProductFromCart } = cartSlice.actions
 const cartReducer = cartSlice.reducer
 
 export { addProductToCart, cartReducer, removeProductFromCart }
+
+//

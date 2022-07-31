@@ -19,6 +19,12 @@ export const Cart = () => {
     dispatch(removeProductFromCart({ id: productId, full: true }))
   }
 
+  const totalOfItems =
+    products.length > 0 &&
+    products
+      .map(product => product.quantity)
+      .reduce((acc, curQuantity) => (acc += curQuantity))
+
   return (
     <div className='p-4 rounded shadow-md flex flex-col gap-4 max-w-md border border-red-500'>
       {products.map(product => (
@@ -57,7 +63,7 @@ export const Cart = () => {
       ))}
       <footer>
         <div className='flex items-center justify-between'>
-          <span>Subtotal</span>
+          <span>Subtotal ({totalOfItems || 0} items)</span>
           <span>${totalPrice}</span>
         </div>
       </footer>
