@@ -3,7 +3,6 @@ import { Product } from '../catalog'
 
 type CartItem = Product & {
   quantity: number
-  priceSum: number
 }
 
 type CartState = {
@@ -27,17 +26,8 @@ const cartSlice = createSlice({
         product => product.id === newItem.id
       )
 
-      const currentProduct = state.products[existingItemIndex]
-
       if (existingItemIndex !== -1) {
-        state.products[existingItemIndex] = {
-          ...currentProduct,
-          category: {
-            ...currentProduct.category,
-          },
-          quantity: currentProduct.quantity + 1,
-          priceSum: currentProduct.priceSum + newItem.price,
-        }
+        state.products[existingItemIndex].quantity += +1
       } else
         state.products.push({
           ...newItem,
@@ -45,15 +35,41 @@ const cartSlice = createSlice({
             ...newItem.category,
           },
           quantity: 1,
-          priceSum: newItem.price,
         })
 
       state.totalPrice += newItem.price
     },
+    removeProductFromCart: (
+      state: CartState,
+      action: PayloadAction<{ id: number; full?: boolean }>
+    ) => {
+      const productId = action.payload.id
+      const full = action.payload.full
+
+      const productIndex = state.products.findIndex(
+        product => product.id === productId
+      )
+
+      const currentProduct = state.products[productIndex]
+
+      const priceToBeSubtractedFromTotal = full
+        ? currentProduct.price * currentProduct.quantity
+        : currentProduct.price
+
+      state.products[productIndex].quantity -= 1
+
+      if (full || state.products[productIndex].quantity <= 0) {
+        state.products = state.products.filter(
+          product => product.id !== productId
+        )
+      }
+
+      state.totalPrice -= priceToBeSubtractedFromTotal
+    },
   },
 })
 
-const { addProductToCart } = cartSlice.actions
+const { addProductToCart, removeProductFromCart } = cartSlice.actions
 const cartReducer = cartSlice.reducer
 
-export { addProductToCart, cartReducer }
+export { addProductToCart, cartReducer, removeProductFromCart }
