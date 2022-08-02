@@ -1,6 +1,7 @@
 import { useCatalog } from './useCatalog'
 import { useAppDispatch } from '../../core/store-helpers'
 import { addProductToCart } from '../cart'
+import toast from 'react-hot-toast'
 
 export type Product = {
   id: number
@@ -29,6 +30,18 @@ export const Catalog = () => {
 
   function handleAddToCart(product: Product) {
     dispatch(addProductToCart(product))
+    toast(
+      <div className='flex items-center gap-2'>
+        <img
+          src={product.images[0]}
+          className='w-12 aspect-square rounded-sm'
+        />
+        <div className='flex flex-col'>
+          <span className='font-semibold'>Product added to the cart</span>
+          <span className='text-sm text-gray-800'>See the cart</span>
+        </div>
+      </div>
+    )
   }
 
   return (
