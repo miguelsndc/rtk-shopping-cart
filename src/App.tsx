@@ -1,13 +1,13 @@
 import { Toaster } from 'react-hot-toast'
-import { Cart } from './features/cart'
-import { Catalog } from './features/catalog'
+import { Header } from './features/catalog/Header'
+import { Router } from './router'
 
 function App() {
   return (
-    <div className='App'>
+    <div>
       <Toaster position='top-right' />
-      <Cart />
-      <Catalog />
+      <Header />
+      <Router />
     </div>
   )
 }

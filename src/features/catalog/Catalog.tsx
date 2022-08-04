@@ -1,7 +1,9 @@
 import { useCatalog } from './useCatalog'
-import { useAppDispatch } from '../../core/store-helpers'
-import { addProductToCart } from '../cart'
+import { useAppDispatch, useAppSelector } from '../../core/store-helpers'
+import { addProductToCart, CartLink } from '../cart'
 import toast from 'react-hot-toast'
+import { useLocation } from 'react-router-dom'
+import { useIsCartOpened } from '../cart/useIsCartOpened'
 
 export type Product = {
   id: number
@@ -17,8 +19,9 @@ export type Product = {
 }
 
 export const Catalog = () => {
-  const { data, error, isLoading } = useCatalog()
+  const { data, isLoading } = useCatalog()
   const dispatch = useAppDispatch()
+  const isCartOpened = useIsCartOpened()
 
   if (isLoading) {
     return (
@@ -30,28 +33,29 @@ export const Catalog = () => {
 
   function handleAddToCart(product: Product) {
     dispatch(addProductToCart(product))
-    toast(
-      <div className='flex items-center gap-2'>
-        <img
-          src={product.images[0]}
-          className='w-12 aspect-square rounded-sm'
-        />
-        <div className='flex flex-col'>
-          <span className='font-semibold'>Product added to the cart</span>
-          <span className='text-sm text-gray-800'>See the cart</span>
+    isCartOpened ||
+      toast(
+        <div className='flex items-center gap-2'>
+          <img
+            src={product.images[0]}
+            className='w-12 aspect-square rounded-sm'
+          />
+          <div className='flex flex-col'>
+            <span className='font-semibold'>Product added to the cart</span>
+            <CartLink className='text-sm text-gray-800'>See the cart</CartLink>
+          </div>
         </div>
-      </div>
-    )
+      )
   }
 
   return (
-    <div className='w-full max-w-6xl m-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 p-2'>
+    <div className='w-full max-w-6xl m-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 p-2 pt-[10vh]'>
       {data.map(product => (
-        <div key={product.id} className='w-full'>
+        <div key={product.id} className='w-full flex flex-col justify-between'>
           <img
             src={product.images[0]}
             alt={product.title}
-            className='rounded-lg w-full'
+            className='rounded-lg w-full flex-1 object-cover'
           />
           <footer className='flex flex-col justify-between mt-3 gap-2'>
             <div className='flex items-center justify-between'>
