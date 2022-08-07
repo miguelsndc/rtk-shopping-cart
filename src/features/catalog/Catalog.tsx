@@ -1,9 +1,7 @@
 import { useCatalog } from './useCatalog'
 import { useAppDispatch, useAppSelector } from '../../core/store-helpers'
-import { addProductToCart, CartLink } from '../cart'
+import { addProductToCart, toggleCartOpened } from '../cart'
 import toast from 'react-hot-toast'
-import { useLocation } from 'react-router-dom'
-import { useIsCartOpened } from '../cart/useIsCartOpened'
 
 export type Product = {
   id: number
@@ -21,7 +19,7 @@ export type Product = {
 export const Catalog = () => {
   const { data, isLoading } = useCatalog()
   const dispatch = useAppDispatch()
-  const isCartOpened = useIsCartOpened()
+  const isCartOpened = useAppSelector(state => state.cart.opened)
 
   if (isLoading) {
     return (
@@ -33,6 +31,12 @@ export const Catalog = () => {
 
   function handleAddToCart(product: Product) {
     dispatch(addProductToCart(product))
+
+    const onSeeCart = (toastId: string) => {
+      toast.dismiss(toastId)
+      dispatch(toggleCartOpened())
+    }
+
     isCartOpened ||
       toast(t => (
         <div className='flex items-center gap-2'>
@@ -40,14 +44,14 @@ export const Catalog = () => {
             src={product.images[0]}
             className='w-12 aspect-square rounded-sm'
           />
-          <div className='flex flex-col'>
+          <div className='flex flex-col items-start'>
             <span className='font-semibold'>Product added to the cart</span>
-            <CartLink
+            <button
               className='text-sm text-gray-800'
-              onClick={() => toast.dismiss(t.id)}
+              onClick={() => onSeeCart(t.id)}
             >
               See the cart
-            </CartLink>
+            </button>
           </div>
         </div>
       ))

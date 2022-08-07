@@ -8,11 +8,13 @@ type CartItem = Product & {
 type CartState = {
   products: CartItem[]
   totalPrice: number
+  opened: boolean
 }
 
 const initialState: CartState = {
   products: [],
   totalPrice: 0,
+  opened: false,
 }
 
 const cartSlice = createSlice({
@@ -66,12 +68,21 @@ const cartSlice = createSlice({
 
       state.totalPrice -= priceToBeSubtractedFromTotal
     },
+    toggleCartOpened: (state: CartState) => {
+      state.opened = !state.opened
+    },
   },
 })
 
-const { addProductToCart, removeProductFromCart } = cartSlice.actions
+const { addProductToCart, removeProductFromCart, toggleCartOpened } =
+  cartSlice.actions
 const cartReducer = cartSlice.reducer
 
-export { addProductToCart, cartReducer, removeProductFromCart }
+export {
+  addProductToCart,
+  cartReducer,
+  removeProductFromCart,
+  toggleCartOpened,
+}
 
 //
