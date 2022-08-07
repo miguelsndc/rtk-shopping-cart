@@ -34,7 +34,7 @@ export const Catalog = () => {
   function handleAddToCart(product: Product) {
     dispatch(addProductToCart(product))
     isCartOpened ||
-      toast(
+      toast(t => (
         <div className='flex items-center gap-2'>
           <img
             src={product.images[0]}
@@ -42,10 +42,15 @@ export const Catalog = () => {
           />
           <div className='flex flex-col'>
             <span className='font-semibold'>Product added to the cart</span>
-            <CartLink className='text-sm text-gray-800'>See the cart</CartLink>
+            <CartLink
+              className='text-sm text-gray-800'
+              onClick={() => toast.dismiss(t.id)}
+            >
+              See the cart
+            </CartLink>
           </div>
         </div>
-      )
+      ))
   }
 
   return (
@@ -55,6 +60,7 @@ export const Catalog = () => {
           <img
             src={product.images[0]}
             alt={product.title}
+            loading='lazy'
             className='rounded-lg w-full flex-1 object-cover'
           />
           <footer className='flex flex-col justify-between mt-3 gap-2'>
@@ -69,7 +75,7 @@ export const Catalog = () => {
               onClick={() => handleAddToCart(product)}
               className='bg-indigo-700 hover:bg-indigo-800 transition-colors block mt-2 py-3 text-white rounded '
             >
-              Adicionar ao Carrinho
+              Add to Cart
             </button>
           </footer>
         </div>

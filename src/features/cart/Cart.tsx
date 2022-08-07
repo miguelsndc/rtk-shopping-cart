@@ -1,9 +1,9 @@
 import { useAppDispatch, useAppSelector } from '../../core/store-helpers'
-import { Plus, Minus, TrashSimple, SmileySad } from 'phosphor-react'
+import { Plus, Minus, TrashSimple, SmileySad, X } from 'phosphor-react'
 import { addProductToCart, removeProductFromCart } from './slice'
 import { Product } from '../catalog'
 
-export const Cart = () => {
+export const Cart = ({ onClose }: { onClose: () => void }) => {
   const { products, totalPrice } = useAppSelector(state => state.cart)
   const dispatch = useAppDispatch()
 
@@ -27,6 +27,13 @@ export const Cart = () => {
 
   return (
     <div className='p-4 rounded shadow-md flex flex-col  bg-white w-full h-screen'>
+      <button
+        onClick={onClose}
+        aria-label='close cart'
+        className='px-4 self-end'
+      >
+        <X size={32} />
+      </button>
       {products.length > 0 ? (
         <>
           <div className='overflow-y-auto flex-1 flex flex-col gap-8 p-4 scrol'>
@@ -35,6 +42,7 @@ export const Cart = () => {
                 <img
                   src={product.images[0]}
                   alt={product.title}
+                  loading='lazy'
                   className='rounded w-full max-w-[128px] aspect-auto'
                 />
                 <div className='flex flex-col justify-between w-full'>
@@ -81,9 +89,11 @@ export const Cart = () => {
         </>
       ) : (
         <div className='flex flex-col items-center justify-center flex-1'>
-          <SmileySad size={96} />
-          <span>Nothing to see here...</span>
-          <span>Try adding some items to your cart!</span>
+          <SmileySad size={96} color='#E5E7EB' />
+          <span className='text-xl font-semibold'>Nothing to see here...</span>
+          <span className='text-sm text-gray-400'>
+            Try adding some items to your cart!
+          </span>
         </div>
       )}
     </div>
